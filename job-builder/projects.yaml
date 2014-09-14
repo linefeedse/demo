@@ -1,0 +1,24 @@
+- project:
+    name: 'demo project staging'
+    jobs:
+      - '{stage}-{app}-staging'
+    stage:
+      - build
+      - unittest
+      - integration
+      - deploy
+    app:
+      - Aardvark
+      - Basilisk
+      - Chihuahua
+      
+- project:
+    name: demo project prod
+    jobs:
+      - '{stage}-{app}-prod'
+    stage:
+      - deploy
+    app:
+      - Aardvark
+      - Basilisk
+      - Chihuahua

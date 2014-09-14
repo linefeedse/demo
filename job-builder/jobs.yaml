@@ -1,0 +1,11 @@
+- job-template:
+    name: '{stage}-{app}-staging'
+    builders:
+      - shell: |
+          true
+
+- job-template:
+    name: '{stage}-{app}-prod'
+    builders:
+      - shell: |
+          true
