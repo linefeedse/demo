@@ -27,11 +27,11 @@ DB_INST_TYPE="db.t2.micro"
 
 ### No tweaks below this line ##########
 
-RDS_TO_START=$(aws rds describe-db-snapshots --region=$REGION --db-instance-identifier $DB_ID --query DBSnapshots[*].DBSnapshotIdentifier | tail -n 2 | head -n 1 | awk -F "\"" '{print $2}')
+#RDS_TO_START=$(aws rds describe-db-snapshots --region=$REGION --db-instance-identifier $DB_ID --query DBSnapshots[*].DBSnapshotIdentifier | tail -n 2 | head -n 1 | awk -F "\"" '{print $2}')
 
-aws rds restore-db-instance-from-db-snapshot --region=$REGION --db-snapshot-identifier $RDS_TO_START --db-instance-class $DB_INST_TYPE --db-subnet-group-name $DB_SUB --no-multi-az --db-instance-identifier $ENV_NAME --no-publicly-accessible --option-group-name $DB_OG
+#aws rds restore-db-instance-from-db-snapshot --region=$REGION --db-snapshot-identifier $RDS_TO_START --db-instance-class $DB_INST_TYPE --db-subnet-group-name $DB_SUB --no-multi-az --db-instance-identifier $ENV_NAME --no-publicly-accessible --option-group-name $DB_OG
 
-while aws rds describe-db-instances --region=$REGION --db-instance-id=$ENV_NAME | grep DBInstanceStatus | grep creating ; do sleep 30 ; done
+#while aws rds describe-db-instances --region=$REGION --db-instance-id=$ENV_NAME | grep DBInstanceStatus | grep creating ; do sleep 30 ; done
 
 aws elasticbeanstalk create-environment --region=$REGION --application-name=$APP_NAME --environment-name=$ENV_NAME --solution-stack-name="$STK_NAME" --tier="$TIER1" --version-label="$VERSION" --option-settings $ITYPE $SCALE $KEYPAIR $VPC $NET $SG $IAM
 
