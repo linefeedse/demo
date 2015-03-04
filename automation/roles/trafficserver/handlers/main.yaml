@@ -1,0 +1,4 @@
+---
+- name: reload trafficserver
+  service: name=trafficserver state=restarted
+

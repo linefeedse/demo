@@ -1,0 +1,17 @@
+---
+- name: install Apache Trafficserver
+  yum: name=trafficserver state=present enablerepo=epel
+
+- name: Trafficserver config files
+  copy: src=roles/trafficserver/files/etc dest=/etc/trafficserver owner=ats group=ats
+  notify:
+    - reload trafficserver
+
+- name: Trafficserver init script
+  copy: src=roles/trafficserver/files/initd_trafficserver dest=/etc/init.d/trafficserver mode=744
+
+- name: Trafficserver snapshot directory
+  file: name=/etc/trafficserver/snapshots state=directory owner=ats
+
+- name: start Trafficserver
+  service: name=trafficserver state=started
