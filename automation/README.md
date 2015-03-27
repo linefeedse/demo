@@ -29,8 +29,7 @@ scripts/do_resources.sh account/keys | grep id
 
 * Run the demo code that brings up a two node cluster
 ```
-ansible-playbook -i hosts -e droplet_state=absent -e discovery_token=XXXX coreos-cluster.yaml
+ansible-playbook -i hosts -e droplet_state=present -e discovery_token=XXXX coreos-cluster.yaml
 ```
 
 * Log in as user core and use fleetctl to check cluster status
----
