@@ -1,0 +1,57 @@
+# Creates or destroys a DO droplet
+- name: Start droplet
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Start or Terminate
+      local_action:
+        module: digital_ocean
+        state: '{{ droplet_state }}'
+        command: droplet
+        name: '{{ item }}'
+        unique_name: yes
+        size_id: 1gb
+        region_id: ams2
+        private_networking: yes
+        image_id: coreos-stable
+        ssh_key_ids: [ 137625 ]
+        wait: yes
+        user_data: |
+          #cloud-config
+
+          coreos:
+            etcd:
+              # generate a new token for each unique cluster from https://discovery.etcd.io/new
+              discovery: https://discovery.etcd.io/{{ discovery_token }}
+              # use $public_ipv4 if your datacenter of choice does not support private networking
+              addr: $private_ipv4:4001
+              peer-addr: $private_ipv4:7001
+            fleet:
+              public-ip: $private_ipv4   # used for fleetctl ssh command
+            units:
+              - name: etcd.service
+                command: start
+              - name: fleet.service
+                command: start
+      register: digocn
+      with_items:
+        - coreos-1
+        - coreos-2
+    - debug:
+        var=digocn
+    - name: Add all instances to inventory
+      local_action: add_host name={{ item.droplet.networks.v4[1].ip_address }} groupname=coreos
+      with_items: digocn.results
+      when: droplet_state == "present"
+    - name: Wait for SSH to come up on all instances
+      local_action: wait_for host={{ item.droplet.networks.v4[1].ip_address }} port=22 delay=3 timeout=420 state=started
+      with_items: digocn.results
+      when: droplet_state == "present"
+
+- name: Bootstrap ansible on coreos hosts
+  hosts: coreos
+  gather_facts: False
+  roles:
+    # if this role is not present, do a git submodule update --init
+    - { role: coreos-bootstrap, when: droplet_state == "present" }

@@ -1,0 +1,3 @@
+[submodule "automation/roles/coreos-bootstrap"]
+	path = automation/roles/coreos-bootstrap
+	url = https://github.com/defunctzombie/ansible-coreos-bootstrap
